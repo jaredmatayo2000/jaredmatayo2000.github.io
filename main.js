@@ -44,3 +44,26 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── REPORT MODAL ───────────────────────────────────── */
+function openReport() {
+  const modal = document.getElementById('report-modal');
+  if (!modal) return;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeReport(e) {
+  // Close if clicking the backdrop (not the inner box) or the X button
+  if (e && e.target !== document.getElementById('report-modal') &&
+      !e.target.closest('.report-modal-close')) return;
+  const modal = document.getElementById('report-modal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeReport({ target: document.getElementById('report-modal') });
+});
