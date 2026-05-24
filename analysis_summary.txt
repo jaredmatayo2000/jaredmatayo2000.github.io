@@ -1,0 +1,84 @@
+============================================================
+AGRICULTURAL ANALYSIS SUMMARY REPORT
+============================================================
+
+DATA OVERVIEW
+----------------------------------------
+Total yield records: 400
+Years covered: 2010 - 2025
+Crop types: Wheat, Corn, Soybeans, Rice, Barley
+Regions: North, South, East, West, Central
+
+YIELD STATISTICS
+----------------------------------------
+
+Wheat:
+  Average yield: 3987 kg/ha
+  Min yield: 2920 kg/ha
+  Max yield: 5250 kg/ha
+  Std dev: 502 kg/ha
+
+Corn:
+  Average yield: 9312 kg/ha
+  Min yield: 6499 kg/ha
+  Max yield: 12306 kg/ha
+  Std dev: 1324 kg/ha
+
+Soybeans:
+  Average yield: 3460 kg/ha
+  Min yield: 2433 kg/ha
+  Max yield: 4665 kg/ha
+  Std dev: 505 kg/ha
+
+Rice:
+  Average yield: 5216 kg/ha
+  Min yield: 3639 kg/ha
+  Max yield: 7085 kg/ha
+  Std dev: 772 kg/ha
+
+Barley:
+  Average yield: 3681 kg/ha
+  Min yield: 2446 kg/ha
+  Max yield: 5656 kg/ha
+  Std dev: 640 kg/ha
+
+REGIONAL PERFORMANCE
+----------------------------------------
+South: 5705 kg/ha
+Central: 5311 kg/ha
+East: 5094 kg/ha
+West: 4875 kg/ha
+North: 4672 kg/ha
+
+SOIL CHARACTERISTICS
+----------------------------------------
+
+Central:
+  pH: 6.9
+  Nitrogen: 134 mg/kg
+  Organic Matter: 3.2%
+  Yield: 5311 kg/ha
+
+East:
+  pH: 5.4
+  Nitrogen: 87 mg/kg
+  Organic Matter: 4.3%
+  Yield: 5094 kg/ha
+
+North:
+  pH: 5.9
+  Nitrogen: 122 mg/kg
+  Organic Matter: 3.5%
+  Yield: 4672 kg/ha
+
+South:
+  pH: 6.7
+  Nitrogen: 157 mg/kg
+  Organic Matter: 2.8%
+  Yield: 5705 kg/ha
+
+West:
+  pH: 7.2
+  Nitrogen: 49 mg/kg
+  Organic Matter: 2.6%
+  Yield: 4875 kg/ha
