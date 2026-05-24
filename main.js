@@ -65,5 +65,25 @@ function closeReport(e) {
 
 // Close on Escape key
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeReport({ target: document.getElementById('report-modal') });
+  if (e.key === 'Escape') {
+    closeReport({ target: document.getElementById('report-modal') });
+    closeAgri({ target: document.getElementById('agri-modal') });
+  }
 });
+
+/* ── AGRICULTURAL MODAL ─────────────────────────────── */
+function openAgri() {
+  const modal = document.getElementById('agri-modal');
+  if (!modal) return;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAgri(e) {
+  if (e && e.target !== document.getElementById('agri-modal') &&
+      !e.target.closest('.report-modal-close')) return;
+  const modal = document.getElementById('agri-modal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
