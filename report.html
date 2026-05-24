@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ML Pipeline Report — Jared Matayo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:     #0d0d0b;
+    --surface:#131311;
+    --s2:     #1a1a17;
+    --s3:     #222220;
+    --text:   #f0ede6;
+    --muted:  #7a7870;
+    --gold:   #b8973a;
+    --gold-lt:rgba(184,151,58,.12);
+    --teal:   #1d7a6b;
+    --line:   rgba(255,255,255,.07);
+    --r:      6px;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0 }
+  html { font-size:15px; scroll-behavior:smooth }
+  body {
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,sans-serif;
+    line-height:1.6;
+    min-height:100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+    padding:18px 5vw;
+    display:flex; justify-content:space-between; align-items:center;
+    position:sticky; top:0; z-index:100;
+    backdrop-filter:blur(12px);
+  }
+  .topbar-left { display:flex; align-items:center; gap:14px }
+  .logo {
+    font-weight:800; font-size:1.1rem; letter-spacing:-.03em;
+    color:var(--gold);
+  }
+  .topbar-title { font-size:.8rem; color:var(--muted); letter-spacing:.04em }
+  .status-pill {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(34,197,94,.1); color:#22c55e;
+    border:1px solid rgba(34,197,94,.25);
+    padding:4px 14px; border-radius:100px;
+    font-size:.72rem; font-weight:700; letter-spacing:.06em;
+  }
+  .status-pill::before {
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:#22c55e; animation:blink 2s infinite;
+  }
+  @keyframes blink {0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* ── LAYOUT ── */
+  .container { max-width:1200px; margin:0 auto; padding:40px 5vw }
+  .section { margin-bottom:48px }
+  .section-title {
+    font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .section-title::before {
+    content:''; width:24px; height:1px; background:var(--gold);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background:linear-gradient(135deg,var(--surface) 0%,var(--s2) 100%);
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    padding:40px;
+    margin-bottom:48px;
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute; top:-60px; right:-60px;
+    width:300px; height:300px; border-radius:50%;
+    background:radial-gradient(circle,rgba(184,151,58,.08),transparent 70%);
+    pointer-events:none;
+  }
+  .hero-grid { display:grid; grid-template-columns:1fr auto; gap:32px; align-items:center }
+  .hero-name {
+    font-size:1.6rem; font-weight:800; letter-spacing:-.04em;
+    color:var(--text); margin-bottom:4px;
+  }
+  .hero-sub { font-size:.85rem; color:var(--muted) }
+  .hero-meta { display:flex; gap:24px; margin-top:20px; flex-wrap:wrap }
+  .hero-meta-item { font-size:.75rem; color:var(--muted) }
+  .hero-meta-item strong { color:var(--text); font-weight:600 }
+  .hero-right-stat { text-align:right }
+  .big-status {
+    font-size:2.5rem; font-weight:900; letter-spacing:-.04em;
+    color:#22c55e; line-height:1;
+  }
+  .big-status-label { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+    margin-bottom:48px;
+  }
+  .kpi-card {
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    padding:24px 20px;
+    transition:border-color .2s, transform .2s;
+    cursor:default;
+  }
+  .kpi-card:hover { border-color:rgba(184,151,58,.35); transform:translateY(-2px) }
+  .kpi-value {
+    font-size:2.2rem; font-weight:900; letter-spacing:-.04em;
+    line-height:1; margin-bottom:6px;
+  }
+  .kpi-label { font-size:.72rem; color:var(--muted); letter-spacing:.06em; text-transform:uppercase }
+
+  /* ── CHARTS ── */
+  .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:48px }
+  .chart-card {
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); padding:28px;
+  }
+  .chart-card h3 {
+    font-size:.75rem; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); margin-bottom:20px;
+  }
+  .chart-wrap { position:relative; height:200px }
+
+  /* ── TABLE ── */
+  .table-card {
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r); overflow:hidden; margin-bottom:16px;
+  }
+  .table-card table { width:100%; border-collapse:collapse }
+  .table-card th {
+    background:var(--s2);
+    font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--muted); font-weight:600;
+    padding:12px 16px; text-align:left;
+    border-bottom:1px solid var(--line);
+  }
+  .table-card td {
+    padding:13px 16px; font-size:.82rem;
+    border-bottom:1px solid var(--line);
+    color:var(--muted);
+  }
+  .table-card tr:last-child td { border-bottom:none }
+  .table-card tr:hover td { background:var(--s2) }
+  .metric-name { color:var(--text); font-weight:600 }
+  .metric-desc { font-size:.75rem }
+  .metric-val  { font-weight:700; font-family:monospace; font-size:.9rem }
+  .metric-pct  { font-size:.75rem; color:var(--muted) }
+
+  /* ── ALERTS ── */
+  .alert-item {
+    background:rgba(239,68,68,.08);
+    border:1px solid rgba(239,68,68,.25);
+    border-radius:var(--r); padding:12px 16px;
+    font-size:.82rem; margin-bottom:8px;
+    color:#fca5a5;
+  }
+  .alert-item.ok {
+    background:rgba(34,197,94,.07);
+    border-color:rgba(34,197,94,.2);
+    color:#86efac;
+  }
+
+  /* ── RUN INFO ── */
+  .info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+  .info-card {
+    background:var(--s2); border:1px solid var(--line);
+    border-radius:var(--r); padding:18px 20px;
+  }
+  .info-label { font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:4px }
+  .info-value { font-size:.85rem; color:var(--text); font-weight:600; word-break:break-all }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top:1px solid var(--line);
+    padding:20px 5vw;
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:.72rem; color:var(--muted);
+  }
+  footer span { color:var(--gold) }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    .kpi-grid { grid-template-columns:repeat(2,1fr) }
+    .chart-grid { grid-template-columns:1fr }
+    .info-grid { grid-template-columns:1fr }
+    .hero-grid { grid-template-columns:1fr }
+    .hero-right-stat { text-align:left }
+  }
+  @media(max-width:480px){
+    .kpi-grid { grid-template-columns:1fr }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">J.M</div>
+    <div class="topbar-title">ML Pipeline Report</div>
+  </div>
+  <div class="status-pill">PIPELINE COMPLETE</div>
+</div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-name">ML Model Deployment Pipeline</div>
+        <div class="hero-sub">Experiment Tracking · Model Versioning · Drift Detection · Production Monitoring</div>
+        <div class="hero-meta">
+          <div class="hero-meta-item">👤 <strong>Jared Matayo Obwogi</strong></div>
+          <div class="hero-meta-item">📅 Generated: <strong>24 May 2026, 12:50:45</strong></div>
+          <div class="hero-meta-item">🔬 Run ID: <strong>8c33176a6820465f…</strong></div>
+          <div class="hero-meta-item">⚙️ Stack: <strong>Python · MLflow · scikit-learn</strong></div>
+        </div>
+      </div>
+      <div class="hero-right-stat">
+        <div class="big-status">COMPLETE</div>
+        <div class="big-status-label">Pipeline Status</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="section-title">Key Performance Indicators</div>
+  <div class="kpi-grid">
+    
+        <div class="kpi-card" title="Training accuracy on hold-out set">
+          <div class="kpi-value" style="color:#b8973a">90.0%</div>
+          <div class="kpi-label">Accuracy</div>
+          
+    <div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden;margin-top:6px">
+      <div style="width:90.0%;height:100%;background:#b8973a;border-radius:4px;
+                  transition:width .6s ease"></div>
+    </div>
+        </div>
+        <div class="kpi-card" title="Macro-averaged F1 across all classes">
+          <div class="kpi-value" style="color:#1d7a6b">90.0%</div>
+          <div class="kpi-label">F1 Score</div>
+          
+    <div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden;margin-top:6px">
+      <div style="width:90.0%;height:100%;background:#1d7a6b;border-radius:4px;
+                  transition:width .6s ease"></div>
+    </div>
+        </div>
+        <div class="kpi-card" title="5-fold cross-validation mean">
+          <div class="kpi-value" style="color:#6366f1">95.0%</div>
+          <div class="kpi-label">CV Accuracy</div>
+          
+    <div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden;margin-top:6px">
+      <div style="width:95.0%;height:100%;background:#6366f1;border-radius:4px;
+                  transition:width .6s ease"></div>
+    </div>
+        </div>
+        <div class="kpi-card" title="Average accuracy across monitoring cycles">
+          <div class="kpi-value" style="color:#f59e0b">100.0%</div>
+          <div class="kpi-label">Avg Monitor Acc</div>
+          
+    <div style="background:rgba(255,255,255,.06);border-radius:4px;height:6px;overflow:hidden;margin-top:6px">
+      <div style="width:100.0%;height:100%;background:#f59e0b;border-radius:4px;
+                  transition:width .6s ease"></div>
+    </div>
+        </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="section-title">Monitoring Trends</div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Accuracy &amp; F1 over Cycles</h3>
+      <div class="chart-wrap"><canvas id="chartAccF1"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Latency per Cycle (ms)</h3>
+      <div class="chart-wrap"><canvas id="chartLatency"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TRAINING METRICS TABLE -->
+  <div class="section-title">Training Metrics</div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th><th>Description</th><th>Value</th><th>Percentage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="metric-name">Accuracy</td>
+          <td class="metric-desc">Test set prediction accuracy</td>
+          <td class="metric-val" style="color:#22c55e">0.9000</td>
+          <td class="metric-pct">90.0%</td>
+        </tr>
+        <tr>
+          <td class="metric-name">Precision (macro)</td>
+          <td class="metric-desc">Macro-averaged precision</td>
+          <td class="metric-val" style="color:#22c55e">0.9024</td>
+          <td class="metric-pct">90.2%</td>
+        </tr>
+        <tr>
+          <td class="metric-name">Recall (macro)</td>
+          <td class="metric-desc">Macro-averaged recall</td>
+          <td class="metric-val" style="color:#22c55e">0.9000</td>
+          <td class="metric-pct">90.0%</td>
+        </tr>
+        <tr>
+          <td class="metric-name">F1 Score (macro)</td>
+          <td class="metric-desc">Harmonic mean of precision & recall</td>
+          <td class="metric-val" style="color:#f59e0b">0.8997</td>
+          <td class="metric-pct">90.0%</td>
+        </tr>
+        <tr>
+          <td class="metric-name">CV Accuracy (mean)</td>
+          <td class="metric-desc">5-fold cross-validation</td>
+          <td class="metric-val" style="color:#22c55e">0.9500</td>
+          <td class="metric-pct">95.0%</td>
+        </tr>
+        <tr>
+          <td class="metric-name">CV Accuracy (std)</td>
+          <td class="metric-desc">Consistency across CV folds — lower is better</td>
+          <td class="metric-val" style="color:#f59e0b">0.0167</td>
+          <td class="metric-pct">1.7%</td>
+        </tr></tbody>
+    </table>
+  </div>
+
+  <!-- MONITORING TABLE -->
+  <div class="section-title" style="margin-top:32px">Production Monitoring History</div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Cycle</th><th>Timestamp</th><th>Version</th>
+          <th>Accuracy</th><th>F1</th><th>Latency</th><th>Drift</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cycle 1</td>
+          <td>24 May 2026, 12:50:37</td>
+          <td>v1</td>
+          <td style="color:#22c55e;font-weight:600">100.0%</td>
+          <td style="color:#6366f1;font-weight:600">100.0%</td>
+          <td>19.6 ms</td>
+          <td style="color:#22c55e;font-weight:600">None</td>
+          <td><span style="color:#22c55e;font-weight:700">✓ OK</span></td>
+        </tr>
+        <tr>
+          <td>Cycle 2</td>
+          <td>24 May 2026, 12:50:37</td>
+          <td>v1</td>
+          <td style="color:#22c55e;font-weight:600">100.0%</td>
+          <td style="color:#6366f1;font-weight:600">100.0%</td>
+          <td>57.7 ms</td>
+          <td style="color:#22c55e;font-weight:600">None</td>
+          <td><span style="color:#22c55e;font-weight:700">✓ OK</span></td>
+        </tr>
+        <tr>
+          <td>Cycle 3</td>
+          <td>24 May 2026, 12:50:38</td>
+          <td>v1</td>
+          <td style="color:#22c55e;font-weight:600">100.0%</td>
+          <td style="color:#6366f1;font-weight:600">100.0%</td>
+          <td>68.8 ms</td>
+          <td style="color:#22c55e;font-weight:600">None</td>
+          <td><span style="color:#22c55e;font-weight:700">✓ OK</span></td>
+        </tr></tbody>
+    </table>
+  </div>
+
+  <!-- ALERTS -->
+  <div class="section-title" style="margin-top:32px">Alerts &amp; Notifications</div>
+  <div><div class="alert-item ok">✓ No alerts — all systems nominal</div></div>
+
+  <!-- RUN INFO -->
+  <div class="section-title" style="margin-top:32px">Run Information</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-label">MLflow Run ID</div>
+      <div class="info-value">8c33176a6820465f8f761d16c4f8d635</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Training Timestamp</div>
+      <div class="info-value">24 May 2026, 12:50:25</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Model Name</div>
+      <div class="info-value">iris-classifier v1</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Monitoring Cycles</div>
+      <div class="info-value">3 cycles completed</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">Alert Rate</div>
+      <div class="info-value">0.0% of cycles triggered alerts</div>
+    </div>
+    <div class="info-card">
+      <div class="info-label">CV Std Deviation</div>
+      <div class="info-value">0.0167  (lower = more consistent)</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>ML Deployment Pipeline Report · <span>Jared Matayo Obwogi</span> · Nairobi, Kenya</p>
+  <p>Generated 24 May 2026, 12:50:45</p>
+</footer>
+
+<script>
+
+const labels   = ["Cycle 1", "Cycle 2", "Cycle 3"];
+const accuracy = [100.0, 100.0, 100.0];
+const f1       = [100.0, 100.0, 100.0];
+const latency  = [19.6, 57.7, 68.8];
+const drift    = [0, 0, 0];
+
+
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { labels: { color: '#7a7870', font: { size: 11 } } },
+    tooltip: {
+      backgroundColor: '#1a1a17',
+      borderColor: 'rgba(255,255,255,.1)',
+      borderWidth: 1,
+      titleColor: '#f0ede6',
+      bodyColor: '#9b9789',
+    }
+  },
+  scales: {
+    x: {
+      ticks: { color: '#7a7870', font: { size: 11 } },
+      grid:  { color: 'rgba(255,255,255,.05)' },
+    },
+    y: {
+      ticks: { color: '#7a7870', font: { size: 11 } },
+      grid:  { color: 'rgba(255,255,255,.05)' },
+    },
+  },
+};
+
+// Chart 1 — Accuracy & F1
+new Chart(document.getElementById('chartAccF1'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Accuracy (%)',
+        data: accuracy,
+        borderColor: '#b8973a',
+        backgroundColor: 'rgba(184,151,58,.1)',
+        pointBackgroundColor: '#b8973a',
+        tension: 0.4, fill: true, pointRadius: 5,
+      },
+      {
+        label: 'F1 Score (%)',
+        data: f1,
+        borderColor: '#1d7a6b',
+        backgroundColor: 'rgba(29,122,107,.08)',
+        pointBackgroundColor: '#1d7a6b',
+        tension: 0.4, fill: true, pointRadius: 5,
+      },
+    ],
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      ...chartDefaults.scales,
+      y: { ...chartDefaults.scales.y, min: 80, max: 101 },
+    },
+  },
+});
+
+// Chart 2 — Latency
+new Chart(document.getElementById('chartLatency'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Latency (ms)',
+      data: latency,
+      backgroundColor: labels.map((_, i) =>
+        latency[i] > 70 ? 'rgba(239,68,68,.7)' : 'rgba(99,102,241,.7)'
+      ),
+      borderColor: labels.map((_, i) =>
+        latency[i] > 70 ? '#ef4444' : '#6366f1'
+      ),
+      borderWidth: 1,
+      borderRadius: 4,
+    }],
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      ...chartDefaults.scales,
+      y: { ...chartDefaults.scales.y, min: 0 },
+    },
+  },
+});
+</script>
+</body>
+</html>
