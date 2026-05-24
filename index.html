@@ -71,9 +71,9 @@
   <div class="hero-divider"></div>
 
   <div class="hero-right">
-    <!-- Replace .hero-initials with <img src="photo.jpg" alt="Jared Matayo"> once you have a photo -->
+    <!-- Replace .hero-initials with <img src="photo2.jpg" alt="Jared Matayo"> once you have a photo -->
     <div class="hero-img-placeholder">
-     <img src="photo2.jpg" alt="Jared Matayo"/>
+      <img src="photo2.jpg" alt="Jared Matayo">
     </div>
 
     <div class="hero-stat-bar">
@@ -172,9 +172,10 @@
 
   <div class="projects-grid">
 
-    <!-- Featured -->
-    <div class="proj-card featured reveal">
-      <div>
+    <!-- Featured — ML Pipeline with live report preview -->
+    <div class="proj-card featured-report reveal">
+      <!-- Left: info -->
+      <div class="proj-report-info">
         <div class="proj-tags">
           <span class="proj-tag">Python</span>
           <span class="proj-tag">MLflow</span>
@@ -182,17 +183,57 @@
           <span class="proj-tag">Production</span>
         </div>
         <h3 style="font-size:1.5rem;margin-top:.75rem">ML Model Deployment Pipeline</h3>
-        <p style="max-width:420px">End-to-end ML pipeline with Python and MLflow for experiment tracking, model versioning, deployment monitoring, and drift detection — directly applicable to production MLOps environments.</p>
-        <div class="proj-link" style="margin-top:1.25rem">View Project →</div>
+        <p>End-to-end ML pipeline with Python and MLflow for experiment tracking, model versioning, deployment monitoring, and drift detection — directly applicable to production MLOps environments.</p>
+
+        <!-- Mini KPI strip -->
+        <div class="proj-kpi-strip">
+          <div class="proj-kpi"><span class="proj-kpi-val">100%</span><span class="proj-kpi-lbl">Accuracy</span></div>
+          <div class="proj-kpi"><span class="proj-kpi-val">100%</span><span class="proj-kpi-lbl">F1 Score</span></div>
+          <div class="proj-kpi"><span class="proj-kpi-val">3</span><span class="proj-kpi-lbl">Monitor Cycles</span></div>
+          <div class="proj-kpi"><span class="proj-kpi-val" style="color:#22c55e">0</span><span class="proj-kpi-lbl">Drift Alerts</span></div>
+        </div>
+
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem">
+          <button class="btn-report-open" onclick="openReport()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            View Full Report
+          </button>
+          <a href="https://github.com/jaredmatayo2000/ML_Model_Deployment_Pipeline" target="_blank" rel="noopener" class="btn-report-gh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+            GitHub Repo
+          </a>
+        </div>
       </div>
-      <div class="proj-featured-terminal">
-        <span class="dim">$</span> python train.py --track<br/>
-        <span class="dim">▶</span> Experiment logged…<br/>
-        <span class="dim">▶</span> Model v2.4.1 registered<br/>
-        <span class="dim">▶</span> Accuracy: <span class="ok">94.7 %</span><br/>
-        <span class="dim">▶</span> Drift status: <span class="ok">None</span><br/>
-        <span class="dim">▶</span> Latency p99: <span class="warn">42 ms</span><br/>
-        <span class="dim">✓</span> <span class="ok">Pipeline complete ✓</span>
+
+      <!-- Right: live iframe preview -->
+      <div class="proj-report-preview" onclick="openReport()" title="Click to expand">
+        <div class="proj-report-preview-label">
+          <span class="preview-dot"></span> Live Report Preview — click to expand
+        </div>
+        <div class="proj-report-frame-wrap">
+          <iframe
+            src="report.html"
+            title="ML Pipeline Report"
+            scrolling="no"
+            loading="lazy"
+          ></iframe>
+        </div>
+        <div class="proj-report-overlay">
+          <span class="proj-report-expand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            Expand
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REPORT MODAL ── -->
+    <div id="report-modal" class="report-modal" onclick="closeReport(event)">
+      <div class="report-modal-inner">
+        <button class="report-modal-close" onclick="closeReport()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <iframe src="report.html" title="ML Pipeline Report — Full View"></iframe>
       </div>
     </div>
 
@@ -219,8 +260,7 @@
       </div>
       <h3>Agricultural Data Analysis</h3>
       <p>Statistical modelling and Python pipelines on agri datasets — part of academic research in scientific computing.</p>
-     <a href="https://github.com/jaredmatayo2000/agricultural_analysis"
-   target="_blank" rel="noopener" class="proj-link">View Project →</a>
+      <a href="https://github.com/jaredmatayo2000/agricultural_analysis" target="_blank" rel="noopener" class="proj-link">View Project →</a>
     </div>
 
     <!-- Card 4 -->
