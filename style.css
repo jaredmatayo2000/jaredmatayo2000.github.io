@@ -54,22 +54,22 @@ ul { list-style: none; }
 }
 #cur {
   width: 8px; height: 8px;
-  background: var(--ink);
+  background: #f5e642;
   transition: transform .1s, background .2s;
 }
 #cur-ring {
   width: 32px; height: 32px;
-  border: 1.5px solid var(--ink);
-  opacity: .3;
+  border: 1.5px solid #f5e642;
+  opacity: .5;
   transition: transform .18s var(--ease), opacity .2s;
 }
 body:has(a:hover) #cur {
-  background: var(--gold);
+  background: #ffe000;
   transform: translate(-50%, -50%) scale(1.4);
 }
 body:has(a:hover) #cur-ring {
-  opacity: .6;
-  border-color: var(--gold);
+  opacity: .9;
+  border-color: #ffe000;
 }
 
 /* ── NAV ────────────────────────────────────────────── */
@@ -82,12 +82,14 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 0 5vw;
-  transition: background .35s, box-shadow .35s, backdrop-filter .35s;
-}
-nav.stuck {
   background: rgba(0, 0, 0, .92);
   backdrop-filter: blur(14px);
   box-shadow: 0 1px 0 rgba(255, 255, 255, .08);
+  transition: background .35s, box-shadow .35s;
+}
+nav.stuck {
+  background: rgba(0, 0, 0, .97);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .12);
 }
 .nav-logo {
   font-family: 'Cabinet Grotesk', sans-serif;
@@ -1024,6 +1026,21 @@ footer span { color: var(--gold); }
 }
 .report-modal-close:hover { background: #b8973a; color: #fff; }
 
+/* ── AGRICULTURAL CARD ──────────────────────────────── */
+.proj-card.agri-report {
+  grid-column: span 3;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--paper3);
+  min-height: 380px;
+}
+.proj-card.agri-report:hover { background: var(--paper3); }
+.agri-preview { background: #f0f4f8; }
+.agri-preview .proj-report-frame-wrap iframe { background: #fff; }
+
 /* ── RESPONSIVE ─────────────────────────────────────── */
 @media (max-width: 900px) {
   #hero { grid-template-columns: 1fr; }
@@ -1036,6 +1053,7 @@ footer span { color: var(--gold); }
   .proj-card.featured { grid-template-columns: 1fr; }
   .proj-featured-terminal { display: none; }
   .proj-card.featured-report { grid-column: span 1; grid-template-columns: 1fr; }
+  .proj-card.agri-report     { grid-column: span 1; grid-template-columns: 1fr; }
   .proj-report-preview { height: 260px; border-right: none; border-top: 1.5px solid var(--line); }
   .proj-report-info { border-right: none; }
   .tl-item { grid-template-columns: 1fr; }
